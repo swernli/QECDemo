@@ -1,6 +1,7 @@
 import Std.Diagnostics.Fact;
 import Std.Diagnostics.CheckAllZero;
 
+@Config(Unrestricted)
 operation Main() : String {
     VerifyBitFlip();
     VerifyPhaseFlip();
@@ -10,6 +11,7 @@ operation Main() : String {
     "All tests passed!"
 }
 
+@Config(Unrestricted)
 operation VerifyBitFlip() : Unit {
     import BitFlip.*;
 
@@ -44,6 +46,7 @@ operation VerifyBitFlip() : Unit {
     }
 }
 
+@Config(Unrestricted)
 operation VerifyPhaseFlip() : Unit {
     import PhaseFlip.*;
 
@@ -78,6 +81,7 @@ operation VerifyPhaseFlip() : Unit {
     }
 }
 
+@Config(Unrestricted)
 operation VerifyShor() : Unit {
     import Shor.*;
 
@@ -114,6 +118,7 @@ operation VerifyShor() : Unit {
     }
 }
 
+@Config(Unrestricted)
 operation VerifySteane() : Unit {
     import Steane.*;
 
