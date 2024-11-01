@@ -1,9 +1,12 @@
 import Std.Diagnostics.Fact;
 import Std.Diagnostics.CheckAllZero;
 
-operation Main() : Unit {
+operation Main() : String {
     VerifyBitFlip();
     VerifyPhaseFlip();
+    VerifyShor();
+    
+    "All tests passed!"
 }
 
 operation VerifyBitFlip() : Unit {
@@ -71,5 +74,41 @@ operation VerifyPhaseFlip() : Unit {
         }
 
         Fact(CheckAllZero(qs + [aux]), $"All Qubits should be returned to the |0⟩ state, failed on phase flip for idx {i}");
+    }
+}
+
+operation VerifyShor() : Unit {
+    import Shor.*;
+
+    {
+        use qs = Qubit[RequiredQubits()];
+        use aux = Qubit();
+        within {
+            H(aux);
+            CNOT(aux, qs[0]);
+            Encode(qs);
+        } apply {
+            // No errors.
+            Correct(qs);
+        }
+
+        Fact(CheckAllZero(qs + [aux]), $"All Qubits should be returned to the |0⟩ state, failed on 'no error' case.");
+    }
+
+    for err in [X, Y, Z] {
+        for i in 0..RequiredQubits() - 1 {
+            use qs = Qubit[RequiredQubits()];
+            use aux = Qubit();
+            within {
+                H(aux);
+                CNOT(aux, qs[0]);
+                Encode(qs);
+            } apply {
+                err(qs[i]);
+                Correct(qs);
+            }
+
+            Fact(CheckAllZero(qs + [aux]), $"All Qubits should be returned to the |0⟩ state, failed for idx {i}");
+        }
     }
 }
