@@ -1,4 +1,6 @@
 import Std.Diagnostics.Fact;
+
+@Config(Unrestricted)
 import Std.Diagnostics.CheckAllZero;
 
 @Config(Unrestricted)
