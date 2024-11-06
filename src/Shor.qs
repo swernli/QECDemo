@@ -67,3 +67,5 @@ operation Correct(qs : Qubit[]) : Unit {
         Z(qs[2 + (zErr * 3)]);
     }
 }
+
+export RequiredQubits, Encode, Correct;

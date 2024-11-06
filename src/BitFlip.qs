@@ -25,3 +25,5 @@ operation Correct(qs : Qubit[]) : Unit {
         X(qs[2]);
     }
 }
+
+export RequiredQubits, Encode, Correct;

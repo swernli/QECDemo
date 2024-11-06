@@ -194,3 +194,5 @@ operation VerifyPerfect() : Unit {
         }
     }
 }
+
+export VerifyBitFlip, VerifyPhaseFlip, VerifyShor, VerifySteane, VerifyPerfect;
