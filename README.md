@@ -10,7 +10,7 @@ This repository is implemented as a Q# library to allow others to import and exp
       "github": {
         "owner": "swernli",
         "repo": "QECDemo",
-        "ref": "96d34106f0ae5b4b0c80e0a0cf7e53a7502318ba"
+        "ref": "5a1a950480512effc4c2cff23780b1494de11aa5"
       }
     }
   }
