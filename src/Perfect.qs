@@ -1,5 +1,4 @@
 import Std.Convert.BoolArrayAsInt;
-import Std.Arrays.ForEach;
 import Std.Diagnostics.Fact;
 
 function RequiredQubits() : Int { 5 }
@@ -7,6 +6,8 @@ function RequiredQubits() : Int { 5 }
 operation Encode(qs : Qubit[]) : Unit is Adj {
     Fact(Length(qs) == RequiredQubits(), "Incorrect number of qubits.");
 
+    // "Optimization of Clifford Circuits," V. Kliuchnikov and D. Maslov,
+    // https://arxiv.org/abs/1305.0810, Figure 4b
     CNOT(qs[0], qs[2]);
     H(qs[0]);
     H(qs[1]);
@@ -37,26 +38,26 @@ operation Correct(qs : Qubit[]) : Unit {
         Measure(generators[3], qs) == One
     ];
     let corrections = [
-        (1, X),
-        (4, Z),
-        (2, X),
-        (2, Z),
-        (0, Z),
-        (3, X),
-        (2, Y),
-        (0, X),
-        (3, Z),
-        (1, Z),
-        (1, Y),
-        (4, X),
-        (0, Y),
-        (4, Y),
-        (3, Y),
+        (PauliX, 1),
+        (PauliZ, 4),
+        (PauliX, 2),
+        (PauliZ, 2),
+        (PauliZ, 0),
+        (PauliX, 3),
+        (PauliY, 2),
+        (PauliX, 0),
+        (PauliZ, 3),
+        (PauliZ, 1),
+        (PauliY, 1),
+        (PauliX, 4),
+        (PauliY, 0),
+        (PauliY, 4),
+        (PauliY, 3)
     ];
     let idx = BoolArrayAsInt(syndrome) - 1;
     if idx >= 0 {
-        let (i, op) = corrections[idx];
-        op(qs[i]);
+        let (p, i) = corrections[idx];
+        ApplyP(p, qs[i]);
     }
 }
 
