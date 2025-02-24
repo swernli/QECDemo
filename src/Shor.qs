@@ -14,6 +14,7 @@ operation Encode(qs : Qubit[]) : Unit is Adj {
     BitFlip.Encode(qs[6..8]);
 }
 
+@Config(Unrestricted)
 operation Correct(qs : Qubit[]) : Unit {
     Fact(Length(qs) == RequiredQubits(), "Incorrect number of qubits.");
 

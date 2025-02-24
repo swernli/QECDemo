@@ -21,6 +21,7 @@ operation Encode(qs : Qubit[]) : Unit is Adj {
     CNOT(qs[0], qs[4]);
 }
 
+@Config(Unrestricted)
 operation Correct(qs : Qubit[]) : Unit {
     Fact(Length(qs) == RequiredQubits(), "Incorrect number of qubits.");
 

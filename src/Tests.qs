@@ -10,10 +10,11 @@ operation Main() : String {
     VerifyShor();
     VerifySteane();
     VerifyPerfect();
-    
+
     "All tests passed!"
 }
 
+@Test()
 @Config(Unrestricted)
 operation VerifyBitFlip() : Unit {
     import BitFlip.*;
@@ -49,6 +50,7 @@ operation VerifyBitFlip() : Unit {
     }
 }
 
+@Test()
 @Config(Unrestricted)
 operation VerifyPhaseFlip() : Unit {
     import PhaseFlip.*;
@@ -84,6 +86,7 @@ operation VerifyPhaseFlip() : Unit {
     }
 }
 
+@Test()
 @Config(Unrestricted)
 operation VerifyShor() : Unit {
     import Shor.*;
@@ -121,6 +124,7 @@ operation VerifyShor() : Unit {
     }
 }
 
+@Test()
 @Config(Unrestricted)
 operation VerifySteane() : Unit {
     import Steane.*;
@@ -158,6 +162,7 @@ operation VerifySteane() : Unit {
     }
 }
 
+@Test()
 @Config(Unrestricted)
 operation VerifyPerfect() : Unit {
     import Perfect.*;
@@ -194,5 +199,3 @@ operation VerifyPerfect() : Unit {
         }
     }
 }
-
-export VerifyBitFlip, VerifyPhaseFlip, VerifyShor, VerifySteane, VerifyPerfect;
