@@ -49,6 +49,24 @@ operation PrepZZ(qs : Qubit[]) : Result {
     MResetZ(aux)
 }
 
+/// Prepares a register of qubits in the ground state |0000> into the logical state |+0>.
+/// This is slighlty more efficient than using the Encode operation, and uses a fifth auxiliary qubit
+/// internally to verify the preparation. An non-zero result indicates an error in the preparation.
+operation PrepXZ(qs : Qubit[]) : Result {
+    Fact(Length(qs) == RequiredQubits(), "Incorrect number of qubits.");
+
+    use aux = Qubit();
+    H(qs[0]);
+    H(qs[3]);
+    within {
+        CNOT(qs[3], aux);
+    } apply {
+        CNOT(qs[3], qs[1]);
+        CNOT(qs[0], qs[2]);
+    }
+    MResetZ(aux)
+}
+
 /// Applies a logical Pauli-X gate to the first qubit of the encoded state.
 operation XI(qs : Qubit[]) : Unit {
     Fact(Length(qs) == RequiredQubits(), "Incorrect number of qubits.");
@@ -215,6 +233,17 @@ operation VerifyPrepZZWithDecoding() : Unit {
     Fact(PrepZZ(qs) == Zero, "PrepZZ should return Zero for a valid noiseless preparation.");
     Fact(Check(qs) == 0, "Check should return 0 for a valid noiseless preparation.");
     Adjoint Encode(qs);
+    Fact(MResetEachZ(qs) == [Zero, Zero, Zero, Zero], "Qubits should be in the |0000> state after encoding.");
+}
+
+@Config(Unrestricted)
+@Test()
+operation VerifyPrepXZWithDecoding() : Unit {
+    use qs = Qubit[RequiredQubits()];
+    Fact(PrepXZ(qs) == Zero, "PrepXZ should return Zero for a valid noiseless preparation.");
+    Fact(Check(qs) == 0, "Check should return 0 for a valid noiseless preparation.");
+    Adjoint Encode(qs);
+    H(qs[0]);
     Fact(MResetEachZ(qs) == [Zero, Zero, Zero, Zero], "Qubits should be in the |0000> state after encoding.");
 }
 
