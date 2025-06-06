@@ -1,6 +1,7 @@
 {
   "files": [
     "src/BitFlip.qs",
+    "src/FourTwoTwo.qs",
     "src/Perfect.qs",
     "src/PhaseFlip.qs",
     "src/Shor.qs",
