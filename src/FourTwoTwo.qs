@@ -1,7 +1,6 @@
 import Std.Math.PI;
 import Std.Arrays.Unzipped;
 import Std.Diagnostics.DumpMachine;
-import Std.Diagnostics.CheckAllZero;
 import Std.Convert.ResultArrayAsInt;
 import Std.Diagnostics.Fact;
 
