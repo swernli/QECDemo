@@ -50,59 +50,41 @@ operation PrepZZ(qs : Qubit[]) : Result {
 }
 
 /// Prepares a register of qubits in the ground state |0000> into the logical state |+0>.
-/// This is slighlty more efficient than using the Encode operation, and uses a fifth auxiliary qubit
+/// This is slighlty more efficient than using the Encode operation, and uses two auxiliary qubits
 /// internally to verify the preparation. An non-zero result indicates an error in the preparation.
-operation PrepXZ(qs : Qubit[]) : Result {
+operation PrepXZ(qs : Qubit[]) : Int {
     Fact(Length(qs) == RequiredQubits(), "Incorrect number of qubits.");
 
-    use aux = Qubit();
+    use aux = Qubit[2];
     H(qs[0]);
     H(qs[3]);
     within {
-        CNOT(qs[3], aux);
+        CNOT(qs[3], aux[0]);
+        CNOT(qs[0], aux[1]);
     } apply {
         CNOT(qs[3], qs[1]);
         CNOT(qs[0], qs[2]);
     }
-    MResetZ(aux)
+    ResultArrayAsInt(MResetEachZ(aux))
 }
 
 /// Prepares a register of qubits in the ground state |0000> into the logical state |0+>.
-/// This is slighlty more efficient than using the Encode operation, and uses a fifth auxiliary qubit
+/// This is slighlty more efficient than using the Encode operation, and uses a two auxiliary qubits
 /// internally to verify the preparation. An non-zero result indicates an error in the preparation.
-operation PrepZX(qs : Qubit[]) : Result {
+operation PrepZX(qs : Qubit[]) : Int {
     Fact(Length(qs) == RequiredQubits(), "Incorrect number of qubits.");
 
-    use aux = Qubit();
+    use aux = Qubit[2];
     H(qs[1]);
     H(qs[3]);
     within {
-        CNOT(qs[3], aux);
+        CNOT(qs[3], aux[0]);
+        CNOT(qs[1], aux[1]);
     } apply {
         CNOT(qs[3], qs[0]);
         CNOT(qs[1], qs[2]);
     }
-    MResetZ(aux)
-}
-
-/// Prepares a register of qubits in the ground state |0000> into the logical state |++>.
-/// This is slighlty more efficient than using the Encode operation, and uses a fifth auxiliary qubit
-/// internally to verify the preparation. An non-zero result indicates an error in the preparation.
-operation PrepXX(qs : Qubit[]) : Result {
-    Fact(Length(qs) == RequiredQubits(), "Incorrect number of qubits.");
-
-    use aux = Qubit();
-    H(qs[0]);
-    H(qs[1]);
-    H(qs[3]);
-    within {
-        CNOT(qs[3], aux);
-    } apply {
-        CNOT(qs[3], qs[2]);
-        CNOT(qs[0], qs[2]);
-        CNOT(qs[1], qs[2]);
-    }
-    MResetZ(aux)
+    ResultArrayAsInt(MResetEachZ(aux))
 }
 
 /// Applies a logical Pauli-X gate to the first qubit of the encoded state.
@@ -278,7 +260,7 @@ operation VerifyPrepZZWithDecoding() : Unit {
 @Test()
 operation VerifyPrepXZWithDecoding() : Unit {
     use qs = Qubit[RequiredQubits()];
-    Fact(PrepXZ(qs) == Zero, "PrepXZ should return Zero for a valid noiseless preparation.");
+    Fact(PrepXZ(qs) == 0, "PrepXZ should return 0 for a valid noiseless preparation.");
     Fact(Check(qs) == 0, "Check should return 0 for a valid noiseless preparation.");
     Adjoint Encode(qs);
     H(qs[0]);
@@ -289,21 +271,9 @@ operation VerifyPrepXZWithDecoding() : Unit {
 @Test()
 operation VerifyPrepZXWithDecoding() : Unit {
     use qs = Qubit[RequiredQubits()];
-    Fact(PrepZX(qs) == Zero, "PrepXZ should return Zero for a valid noiseless preparation.");
+    Fact(PrepZX(qs) == 0, "PrepXZ should return 0 for a valid noiseless preparation.");
     Fact(Check(qs) == 0, "Check should return 0 for a valid noiseless preparation.");
     Adjoint Encode(qs);
-    H(qs[1]);
-    Fact(MResetEachZ(qs) == [Zero, Zero, Zero, Zero], "Qubits should be in the |0000> state after encoding.");
-}
-
-@Config(Unrestricted)
-@Test()
-operation VerifyPrepXXWithDecoding() : Unit {
-    use qs = Qubit[RequiredQubits()];
-    Fact(PrepXX(qs) == Zero, "PrepXZ should return Zero for a valid noiseless preparation.");
-    Fact(Check(qs) == 0, "Check should return 0 for a valid noiseless preparation.");
-    Adjoint Encode(qs);
-    H(qs[0]);
     H(qs[1]);
     Fact(MResetEachZ(qs) == [Zero, Zero, Zero, Zero], "Qubits should be in the |0000> state after encoding.");
 }
