@@ -603,3 +603,21 @@ operation Verify_CXCX_WithDecoding() : Unit {
     Fact(MResetEachZ(qs0) == [One, One, Zero, Zero], "Qubits in qs0 should be in the |1100> state after applying CXCX.");
     Fact(MResetEachZ(qs1) == [One, One, Zero, Zero], "Qubits in qs1 should be in the |1100> state after applying CXCX.");
 }
+
+operation TestPhysical() : Result[] {
+    import Std.Diagnostics.*;
+    ConfigurePauliNoise(DepolarizingNoise(0.003));
+    use qs = Qubit[2];
+    H(qs[0]);
+    CNOT(qs[0], qs[1]);
+    MResetEachZ(qs)
+}
+
+operation TestLogical() : Result[] {
+    import Std.Diagnostics.*;
+    ConfigurePauliNoise(DepolarizingNoise(0.003));
+    use qs = Qubit[RequiredQubits()];
+    Fact(PrepXZ(qs) == 0, "");
+    CX01(qs);
+    DecodeMeasurement(MeasureZZ(qs))
+}
