@@ -26,8 +26,13 @@ operation Check(qs : Qubit[]) : Int {
     Fact(Length(qs) == RequiredQubits(), "Incorrect number of qubits.");
 
     use aux = Qubit[2];
-    ApplyToEach(CNOT(aux[0], _), qs);
-    ApplyToEach(CZ(aux[1], _), qs);
+    within {
+        H(aux[0]);
+        H(aux[1]);
+    } apply {
+        ApplyToEach(CNOT(aux[0], _), qs);
+        ApplyToEach(CZ(aux[1], _), qs);
+    }
     ResultArrayAsInt(MResetEachZ(aux))
 }
 
@@ -617,7 +622,20 @@ operation TestLogical() : Result[] {
     import Std.Diagnostics.*;
     ConfigurePauliNoise(DepolarizingNoise(0.003));
     use qs = Qubit[RequiredQubits()];
-    Fact(PrepXZ(qs) == 0, "");
+    Fact(PrepXZ(qs) == 0, "Preparation failed");
     CX01(qs);
     DecodeMeasurement(MeasureZZ(qs))
+}
+
+operation TestPauliErrors() : Unit {
+    for pauli in [PauliI, PauliX, PauliY, PauliZ] {
+        for idx in 0..3 {
+            use qs = Qubit[RequiredQubits()];
+            Encode(qs);
+            ApplyP(pauli, qs[idx]);
+            let syndrome = Check(qs);
+            Message($"Syndrome for {pauli} on qubit {idx}: {syndrome}");
+            ResetAll(qs);
+        }
+    }
 }
